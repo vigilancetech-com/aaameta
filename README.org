@@ -1,0 +1,1062 @@
+Matt Ratzke
+
+
+
+
+
+
+
+Message List
+:speech_balloon: There’s more to this conversation
+To see and search this conversation’s full history, upgrade to one of our paid plans.
+Learn More
+
+vigilancetech [10:20 PM]
+Hey Matt, I installed [meta] and tried to create my own project thusly:
+
+ ```boot -d degree9/meta my-meta-project```
+and get this:
+Binary
+meta.errors
+Binary
+
+
+vigilancetech [10:35 PM]
+I'm thinking of trying to get a hl project ported to electron ala shadow-cljs starting with:
+
+https://github.com/shadow-cljs/examples/tree/master/electron
+
+I was looking at doing it with lumo but they don't quite seem to have any upgradable repl or nrepl necessary to get a decent emacs client like spiral or cider to work and inf-clojure doesn't quite cut it for me.
+
+If you're doing something that will get me solidly developing in node/electron (preferrably bootstrapped) I'm really interested and would like to collaborate/help.   I'm slightly on the noobish side but I'm picking this up pretty fast (IMO).
+
+I've done pretty well just not using *.hl files and the (page) macro and shadow-cljs so far to get a rock solid cider/repl experience so far.   I just have a couple projects coming up that it would be great to get all this running together under node/electron.
+
+As of a few weeks ago I just couldn't get a decent nrepl going with boot (actually, it's always been pretty flakey, e.g. in getting it to connect reliably).   I'm not really interested in switching editors at this point as I have a lot of other stuff in emacs.   Of course, after doing all this stuff with shadow I know enough more now I might be able to figure it out, but I'm kinda liking shadow.  Not sure about how leaving boot's sandboxed compiles is going to be biting me in the future when I get to packaging/deploying apps for the end users tho.
+
+flyboarder [11:12 AM]
+@vigilancetech yes I have many working projects using a similar setup
+the instructions on the meta page are out of date
+you will need the latest snapshot for a stable build
+and a few static files that are not yet documented
+I still need to fully incorporate meta and shadow, but meta now uses shadow as the cljs build tool
+I use docker containers for by projects for packaging and deploying
+And then run some DevOps pipelines to automate pushing to everyone
+
+vigilancetech [4:07 PM]
+Ok thanks, I'll check out the latest snapshot
+
+flyboarder [4:09 PM]
+by all means I assume you will run into roadblocks with meta, but it is our main platform at Degree9 so if you need help reach out!
+
+flyboarder [4:17 PM]
+the current 0.4.0 will become 1.0 soon once I refactor and remove some stuff but the code is stable once your builds are working
+
+vigilancetech [9:54 PM]
+dumb question: how do I check that out?   `git tag -l` in that repo returns nothing
+
+flyboarder [10:23 AM]
+you just need to pull it from clojars
+`boot -d degree9/meta:0.4.0-SNAPSHOT`
+
+vigilancetech [2:37 PM]
+yeah, but what about the source?   I'm thinking I want to try using the cli shadow-cljs version w/o *.hl/(page) on electron first (since my app already lacks those) but I wanted to get some ideas on how to get it to launch into electron.
+
+flyboarder [2:41 PM]
+@vigilancetech I just updated the repo on github, master branch has `0.4.0-SNAPSHOT`
+
+vigilancetech [2:41 PM]
+thanks!
+
+flyboarder [2:42 PM]
+You should be able to run it just like every other cljs-electron project
+
+vigilancetech [2:42 PM]
+ok.
+hmm... I try a `git pull` and it says already up to date.   Does it take a while for something like this to propagate?
+I'm on master
+and I'm still clueless as to why I'm not seeing any tags with `git tag -l`
+
+flyboarder [2:44 PM]
+there are no tags :stuck_out_tongue:
+
+vigilancetech [2:44 PM]
+ahh, ok.   So your versions are just in your commit messages?
+
+flyboarder [2:45 PM]
+well so far there have been no stable versions until recently, thats why we bumped from 0.3 to 0.4
+once there is an api we are consistent with it will get a 1.0 and we will start working on feature releases
+but at the moment we are taking a lot of our production code and back-porting it
+
+vigilancetech [2:47 PM]
+this is the main repo, right?  `git@github.com:degree9/meta.git`
+
+flyboarder [2:47 PM]
+yep
+
+vigilancetech [2:48 PM]
+hmm... gonna try and reclone it instead I guess
+
+flyboarder [2:48 PM]
+is the issue how you are building it?
+`boot develop`
+
+vigilancetech [2:48 PM]
+I did that and it worked fine.  When I went to create a new meta project it barfed
+
+flyboarder [2:49 PM]
+oh ok, yeah the generator is probably the most messed up right now
+since it hasnt been updated in months
+
+vigilancetech [2:49 PM]
+I just wanted to check it out, then delve into what you did that might help me right now
+
+flyboarder [2:50 PM]
+ok, well maybe meta isnt the right project for you
+the goal for meta is that I have already glued all the parts together between the packages listed on the readme
+
+vigilancetech [2:50 PM]
+well, if I was starting a new one I'd probably use it, but I'm still stuck on emacs rather than atom
+actually my ultimate goal is to have something like spiral or cider to connect to lumo on electron
+
+flyboarder [2:51 PM]
+you shouldnt need atom tho
+it’s not tied in directly
+and will probably be removed tbh
+
+vigilancetech [2:51 PM]
+or maybe even planck with a chromium front end somewhat like electron.   Sounds like their js engine is quicker
+
+flyboarder [2:52 PM]
+I see, so is there something specific you are trying to sort out with meta?
+
+vigilancetech [2:52 PM]
+yeah, I kinda figured atom wasn't a necessity.   I like what other stuff you've done tho, definitely.   Just not sure I want boot anymore, even with shadow compiles
+
+flyboarder [2:53 PM]
+boot isnt necessary for the cljs code either
+it’s just that all my dev workflows are coded in clojure on boot (edited)
+
+vigilancetech [2:53 PM]
+Just to basically get a hl based project built with shadow to launch in electron.   I think I'm almost there actually, but I was curious if there was anything you'd done that I'll need
+
+flyboarder [2:54 PM]
+that shouldnt be hard, last time I did it I followed a regular cljs guide (edited)
+which is what resulted in meta in the first place
+
+vigilancetech [2:54 PM]
+way I see it the only real advantage of the boot-hoplon project is to get your hlisp referred into your namespace without any "as" aliasing, which doesn't seem to be that big a deal to me, otherwise boot should be able to be jettisoned
+
+flyboarder [2:55 PM]
+correct
+the only thing is that you are now relying on tools from the host environment and an awareness for the project context
+
+vigilancetech [2:56 PM]
+maybe not having pods might bite me in the ass some day, but there's a lot more atm to like in shadow
+
+flyboarder [2:57 PM]
+pod’s arnt that important to a cljs-only project
+
+vigilancetech [2:57 PM]
+yeah, and personally I don't see myself not being anything I need to do for a long time w/node
+as far as back end stuff at least
+
+flyboarder [2:58 PM]
+yep, but what about the rest of your code? like less/sass, uploading to other services, etc? none of that can be done in shadow
+thats where pods come in
+
+vigilancetech [2:59 PM]
+really?  It seems like most all the clj is still available, but you just have to write a lot more of it for yourself
+what really was killing me is how touchy boot was about getting a solid repl going.   That and not having to wrap your js modules w/cljsjs (edited)
+
+flyboarder [3:02 PM]
+Yeah I dont use boot for repl unless I am working on clj stuff
+
+vigilancetech [3:02 PM]
+but yeah, I may have to find myself switching to your stuff when I go to deployment
+
+flyboarder [3:02 PM]
+`boot shadow/server` `shadow-cljs cljs-repl`
+^ that how I do it
+
+vigilancetech [3:03 PM]
+do you get a good solid repl by using the shadow libraries?
+
+flyboarder [3:03 PM]
+yeah it’s been fine
+
+vigilancetech [3:06 PM]
+great!   Well, thanks.   I'll be checking your stuff out.   Hopefully after I get over the hump on this particular project (probably another month) I can get onto getting a decent bootstrapped development system/ide going.   I'd like to push something forward on that before starting on the next one.   Preferrably getting nrepl going on lumo so I can use cider.   Then I think I'll be good just doing apps for a while.
+hey, btw, I just noticed the degree9.com domain might be coming up soon.  You might want to snag it also
+
+vigilancetech [12:22 PM]
+I installed 0.4.0-SNAPSHOT and get this:
+
+```$ boot -d degree9/meta mproj --generate
+WARNING: compile already refers to: #'clojure.core/compile in namespace: boot.user, being replaced by: #'meta.boot/compile
+                              java.lang.Thread.run              Thread.java:  748
+java.util.concurrent.ThreadPoolExecutor$Worker.run  ThreadPoolExecutor.java:  624
+ java.util.concurrent.ThreadPoolExecutor.runWorker  ThreadPoolExecutor.java: 1149
+               java.util.concurrent.FutureTask.run          FutureTask.java:  266
+                                               ...
+               clojure.core/binding-conveyor-fn/fn                 core.clj: 2022
+                                 boot.core/boot/fn                 core.clj: 1033
+                                               ...
+                         boot.core/construct-tasks                 core.clj:  987
+java.lang.IllegalArgumentException: No such task (mproj)
+        clojure.lang.ExceptionInfo: No such task (mproj)
+    line: 47```
+
+flyboarder [12:23 PM]
+yeah again the generator is broken right now, I need to rebuild it
+
+vigilancetech [12:23 PM]
+is there a project I could clone?
+
+flyboarder [12:24 PM]
+All you need is to include meta in your deps and then call `(meta/initialize)` in boot
+
+vigilancetech [12:24 PM]
+a minimal "hello world" project?
+
+flyboarder [12:24 PM]
+I can send you the files but no project yet
+I guess we could make one :stuck_out_tongue:
+it would be useful
+
+vigilancetech [12:24 PM]
+oh, ok.   So start with a basic hoplon project?
+
+flyboarder [12:24 PM]
+you have a shadow-cljs.edn already yes?
+
+vigilancetech [12:24 PM]
+yes
+
+flyboarder [12:25 PM]
+ok
+
+vigilancetech [12:25 PM]
+but I was thinking of just starting with a virgin meta project then comparing it to my existing boot/shadow project
+
+flyboarder [12:26 PM]
+build.boot
+;; Powered by Meta ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+​
+;; dependency
+(set-env! :dependencies '[[org.clojure/clojure     "1.10.0-alpha6"]
+             [org.clojure/clojurescript  "1.10.339"]
+             [degree9/meta        "0.4.0-SNAPSHOT"]])
+​
+;; require
+(require '[meta.boot :as m])
+​
+;; init
+(m/initialize)
+​
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+​
+;; Project ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(deftask develop
+ "Start local development."
+ []
+ (comp
+  (m/microservice)))
+​
+(deftask build
+ "Start production build."
+ []
+ (m/compile))
+Collapse
+
+vigilancetech [12:27 PM]
+ok, so just make that my build.boot in an empty dir and say `boot develop` in that?
+
+flyboarder [12:27 PM]
+yep
+with a valid shadow file
+
+vigilancetech [12:28 PM]
+ah, ok
+
+flyboarder [12:32 PM]
+you will need to add deps to both files, the next version will auto pull deps from the shadow file
+
+vigilancetech [12:32 PM]
+ok
+you should make a #meta room if you're serious about promoting this, then we could be having this discussion there for future users to benefit from
+although I guess when the generator is rebuilt it'll be a moot point
+
+vigilancetech [1:02 PM]
+should the entry point when doing `npm init` be `index.js` w/meta?
+
+flyboarder [1:03 PM]
+depends on your shadow-cljs file
+here is mine, with deps removed
+shadow-cljs.edn
+;; shadow-cljs configuration
+{:source-paths
+ ["src"]
+​
+ :dependencies
+ [[org.clojure/clojure "1.10.0-alpha6"]
+ [org.clojure/clojurescript "1.10.339"]
+ [degree9/meta "0.4.0-SNAPSHOT"]]
+​
+ ; http server
+ :http {:host "127.0.0.1"}
+​
+ ; build configurations
+ :builds
+ {:client {:target :browser
+      :output-dir "client"
+      :asset-path "/client"
+      :modules {:app {:entries [app.index]}}}
+​
+ :server {:target :node-script
+      :main app.server/init
+      :output-dir "app"
+      :output-to "nodejs.js"
+      :release {:compiler-options {:optimizations :simple}}}
+​
+ :repl {
+     :target :node-script
+     ; :target :browser
+     :main degree9.repl/init
+     :output-dir "repl-public/js"
+     :output-to "repl-node/main.js"
+     :asset-path "/js"
+     :compiler-options
+     {:reader-features #{:browser}}
+​
+     :modules
+     {:main
+     {:entries [degree9.repl]}}}}}
+Collapse
+so I have `app.index` and `app.server`
+meta will generate a cljs edn file for the server prior to compiling
+I recommend using the app namespace so the existing server will compile fine
+meta will also start a server for that namespace
+
+vigilancetech [1:07 PM]
+ok, so what do I put in here?
+
+```package name: (aaameta)
+version: (1.0.0)
+description: playing with degree9/meta
+entry point: (index.js)```
+
+`app/index.js`?
+
+flyboarder [1:07 PM]
+I dont use a npm main
+
+vigilancetech [1:08 PM]
+oh, okay.
+
+flyboarder [1:08 PM]
+package.json
+{
+ "private": true,
+ "dependencies": {
+  // prod deps //
+ },
+ "devDependencies": {
+  // dev deps //
+ }
+}
+Collapse
+is should be the `nodejs.js` file (edited)
+all of my apps are for containers, so I have a docker file thats used to build the container, I then just start my app using `node nodejs`
+if it crashes the container fails so no process manager is needed
+
+vigilancetech [1:12 PM]
+Untitled
+```
+$ boot develop
+SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
+SLF4J: Defaulting to no-operation (NOP) logger implementation
+SLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.
+Exception in thread "main" java.lang.reflect.InvocationTargetException
+    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke(Method.java:498)
+    at Boot.main(Boot.java:257)
+Caused by: org.eclipse.aether.resolution.DependencyResolutionException: Could not find artifact org.clojure:clojure:jar:1.10.0-alpha in clojars (https://repo.clojars.org/)
+    at org.eclipse.aether.internal.impl.DefaultRepositorySystem.resolveDependencies(DefaultRepositorySystem.java:393)
+    at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+    at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+    at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+    at java.lang.reflect.Method.invoke(Method.java:498)
+    at clojure.lang.Reflector.invokeMatchingMethod(Reflector.java:93)
+    at clojure.lang.Reflector.invokeInstanceMethod(Reflector.java:28)
+    at cemerick.pomegranate.aether$resolve_dependencies_STAR_.doInvoke(aether.clj:806)
+    at clojure.lang.RestFn.applyTo(RestFn.java:137)
+    at clojure.core$apply.invoke(core.clj:624)
+    at cemerick.pomegranate.aether$resolve_dependencies.doInvoke(aether.clj:815)
+    at clojure.lang.RestFn.invoke(RestFn.java:2793)
+    at boot.aether$resolve_dependencies_STAR_.invoke(aether.clj:117)
+    at clojure.lang.AFn.applyToHelper(AFn.java:154)
+    at clojure.lang.AFn.applyTo(AFn.java:144)
+    at clojure.core$apply.invoke(core.clj:624)
+    at clojure.core$memoize$fn__5097.doInvoke(core.clj:5846)
+    at clojure.lang.RestFn.invoke(RestFn.java:408)
+    at boot.aether$resolve_dependencies.invoke(aether.clj:139)
+    at boot.aether$resolve_dependency_jars.invoke(aether.clj:155)
+    at clojure.lang.Var.invoke(Var.java:394)
+    at org.projectodd.shimdandy.impl.ClojureRuntimeShimImpl.invoke(ClojureRuntimeShimImpl.java:159)
+    at org.projectodd.shimdandy.impl.ClojureRuntimeShimImpl.invoke(ClojureRuntimeShimImpl.java:150)
+    at boot.App.resolveDepJars(App.java:381)
+    at boot.App.resolveDepJars(App.java:372)
+    at boot.App.seedCache(App.java:272)
+    at boot.App.readCache(App.java:307)
+    at boot.App.main(App.java:492)
+    ... 5 more
+Caused by: org.eclipse.aether.resolution.ArtifactResolutionException: Could not find artifact org.clojure:clojure:jar:1.10.0-alpha in clojars (https://repo.clojars.org/)
+    at org.eclipse.aether.internal.impl.DefaultArtifactResolver.resolve(DefaultArtifactResolver.java:453)
+    at org.eclipse.aether.internal.impl.DefaultArtifactResolver.resolveArtifacts(DefaultArtifactResolver.java:255)
+    at org.eclipse.aether.internal.impl.DefaultRepositorySystem.resolveDependencies(DefaultRepositorySystem.java:376)
+    ... 32 more
+Caused by: org.eclipse.aether.transfer.ArtifactNotFoundException: Could not find artifact org.clojure:clojure:jar:1.10.0-alpha in clojars (https://repo.clojars.org/)
+    at org.eclipse.aether.connector.basic.ArtifactTransportListener.transferFailed(ArtifactTransportListener.java:48)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector$TaskRunner.run(BasicRepositoryConnector.java:364)
+    at org.eclipse.aether.util.concurrency.RunnableErrorForwarder$1.run(RunnableErrorForwarder.java:76)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector$DirectExecutor.execute(BasicRepositoryConnector.java:590)
+    at org.eclipse.aether.connector.basic.BasicRepositoryConnector.get(BasicRepositoryConnector.java:258)
+    at org.eclipse.aether.internal.impl.DefaultArtifactResolver.performDownloads(DefaultArtifactResolver.java:529)
+    at org.eclipse.aether.internal.impl.DefaultArtifactResolver.resolve(DefaultArtifactResolver.java:430)
+    ... 34 more
+```
+Collapse
+
+flyboarder [1:13 PM]
+you have a bad dep
+
+vigilancetech [1:13 PM]
+that first message (first several lines) I get all the time and doesn't seem to effect things
+
+flyboarder [1:14 PM]
+you need an alpha version number
+`-alpha6`
+you have `1.10.0-alpha`
+
+vigilancetech [1:14 PM]
+oh, you're right!
+paste problem
+
+flyboarder [1:15 PM]
+also make sure you set up your boot.properties
+
+vigilancetech [1:15 PM]
+that's where I short-pasted it in to
+hmm... still missing a source file?
+
+```The required namespace "app.server" is not available```
+
+flyboarder [1:19 PM]
+well yeah, thats where your server should go, usually the generator would give you a stub to fill in
+
+vigilancetech [1:19 PM]
+ok, so that's basically main.cljs?
+like from the shadow-cljs electron example?
+
+flyboarder [1:20 PM]
+yeah
+here is a basic `app/server.cljs`
+
+vigilancetech [1:21 PM]
+also, getting this:
+
+```Starting Node.js...
+Elapsed time: 30.902 sec
+
+Node.js Error...
+internal/modules/cjs/loader.js:550
+    throw err;
+    ^
+
+Error: Cannot find module '/home/kevin/.boot/cache/tmp/home/kevin/0work/aaameta/p4r/aj70hd/nodejs'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:548:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:475:25)
+    at Function.Module.runMain (internal/modules/cjs/loader.js:695:10)
+    at startup (internal/bootstrap/node.js:201:19)
+    at bootstrapNodeJSCore (internal/bootstrap/node.js:516:3)```
+
+
+flyboarder [1:21 PM]
+app/server.cljs
+(ns app.server
+ (:require
+ [meta.server :as svr]))
+​
+(def app
+ (-> (svr/app)
+  ;; feathers services
+  ))
+​
+(defn init []
+ (svr/start! app))
+Collapse
+so the server either isnt compiling
+
+vigilancetech [1:22 PM]
+yeah, that was before I put it in
+
+flyboarder [1:24 PM]
+you might actually want `init!` not `start!`
+
+vigilancetech [1:24 PM]
+so now I have:
+
+```/aaameta/src $ find .
+.
+./index.cljs.hl
+./app
+./app/server.cljs```
+
+flyboarder [1:24 PM]
+so move your index into `app/index.cljs`
+
+vigilancetech [1:24 PM]
+no longer a *.hl?
+
+flyboarder [1:24 PM]
+nope
+meta doesnt use `.hl` or the convenience macros
+so you will need a static html file to load the client
+
+vigilancetech [1:25 PM]
+oh, ok.   Any particular reason why?  I thought that was a significant reason for still using boot.
+
+flyboarder [1:26 PM]
+no, its really slow if you use boot-hoplon and the output html file uses a path incompatible with how shadow compiles the client
+index.html
+<!doctype html>
+<html>
+<body>
+<script src="/client/app.js"></script>
+</body>
+</html>
+Collapse
+
+vigilancetech [1:26 PM]
+ah, ok
+
+flyboarder [1:27 PM]
+so you dont need the ^:hoplon “index.html” thing at all
+
+vigilancetech [1:27 PM]
+so that index.html just goes into the root of `target/`?
+you have a directory tree printout of a minimal meta project handy?
+
+vigilancetech [1:46 PM]
+so how do the node dependencies get pulled in if not using npm/yarn?  (sorry for the dumb questions :confused: )
+
+```Starting Node.js...
+Elapsed time: 10.608 sec
+
+Node.js Error...
+SHADOW import error /home/kevin/.boot/cache/tmp/home/kevin/0work/aaameta/9yr/aj70hd/app/cljs-runtime/shadow.js.shim.module$$feathersjs$authentication.js
+Error: Cannot find module '@feathersjs/authentication'
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:548:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:475:25)
+    at Module.require (internal/modules/cjs/loader.js:598:17)
+    at require (internal/modules/cjs/helpers.js:11:18)
+    at /home/kevin/.boot/cache/tmp/home/kevin/0work/aaameta/9yr/aj70hd/app/cljs-runtime/shadow.js.shim.module$$feathersjs$authentication.js:3:52
+    at global.SHADOW_IMPORT (/home/kevin/.boot/cache/tmp/home/kevin/0work/aaameta/9yr/aj70hd/nodejs.js:59:44)
+    at /home/kevin/.boot/cache/tmp/home/kevin/0work/aaameta/9yr/aj70hd/nodejs.js:3027:1
+    at Object.<anonymous> (/home/kevin/.boot/cache/tmp/home/kevin/0work/aaameta/9yr/aj70hd/nodejs.js:3047:3)
+    at Module._compile (internal/modules/cjs/loader.js:654:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:665:10)```
+
+
+flyboarder [1:59 PM]
+You still use npm to install the deps, the node_modules gets copied in via boot
+
+vigilancetech [2:00 PM]
+ah, ok
+
+vigilancetech [2:37 PM]
+grrr... I have no idea how to beat this feathers thing.   I tried installing it with `npm i feathers` and it doesn't go away (but complains about being deprecated).   When I follow the instructions to upgrade it I get a whole different error (as well as other deprecated packages).   Any clues?
+
+flyboarder [5:15 PM]
+you need to be following the errors more specifically
+here use this file instead
+package.json
+{
+ "private": true,
+ "dependencies": {
+  "@feathersjs/authentication": "^2.1.6",
+  "@feathersjs/authentication-jwt": "^1.0.1",
+  "@feathersjs/authentication-local": "^1.2.1",
+  "@feathersjs/client": "^3.7.3",
+  "@feathersjs/commons": "^1.4.1",
+  "@feathersjs/configuration": "^1.0.1",
+  "@feathersjs/errors": "^3.2.0",
+  "@feathersjs/express": "^1.2.3",
+  "@feathersjs/feathers": "^3.1.6",
+  "@feathersjs/socket-commons": "^3.1.5",
+  "@feathersjs/socketio": "^3.2.2",
+  "buffer": "^5.2.1",
+  "dotenv": "^6.1.0",
+  "feathers-mongoose": "^6.1.2",
+  "jquery": "^3.3.1",
+  "mongodb": "^3.0.10",
+  "mongoose": "^5.1.4",
+  "xregexp": "^4.2.0"
+ },
+ "devDependencies": {
+  "source-map-support": "^0.5.9"
+ }
+}
+Collapse
+if you are trying to get a new app working that should be the minimum + mongodb
+
+flyboarder [5:32 PM]
+the default server still requires you to setup a `/users` path and service to store user accounts, this could be any store even memory
+
+vigilancetech [11:10 PM]
+so I have to put all those same dependencies in the `shadow-cljs.edn` right?
+
+flyboarder [11:43 PM]
+No just in the package.json file
+Clojure and clojurescript deps go in the shadow and boot files
+
+vigilancetech [5:57 PM]
+okay, it seems to have compiled the server with `boot develop`.   I had to build the client with `shadow watch client`.  Electron won't start against it with either `electron .` nor `electron target` saying:
+
+```Error launching app
+Unable to find Electron app at /home/kevin/0work/aaameta/target
+
+Cannot find module '/home/kevin/0work/aaameta/target'```
+Also, now it looks like I have to have 2 JVMs spun up to develop it (one for boot, one for shadow)?
+
+flyboarder [8:06 PM]
+right you will need to `cd target` to run election
+I have a task somewhere for doing that for you
+https://github.com/degree9/boot-electron/
+
+vigilancetech [8:07 PM]
+okay, I did a `boot prod` then electron can't find the `index.html.js` file.
+
+flyboarder [8:08 PM]
+it shouldn’t be index.html.js thats only if you are using the boot-hoplon macros (edited)
+shadow will not generate a index.html.js file
+
+vigilancetech [8:09 PM]
+so, how do I get to the development cycle?   And what is this `microservice` I see?
+
+flyboarder [8:10 PM]
+`microservice` is a workflow task I was mentioning before
+its for building microservices
+which means you dont have a client to compile
+since a microservice is just an api
+there are other tasks for just building the client or building both
+
+vigilancetech [8:12 PM]
+well, right now I just want to continue with my hoplon project but using (and then packaging to) electron, preferably just like building for the browser (e.g. with recompile/reload on any source file change).
+
+flyboarder [8:13 PM]
+https://github.com/degree9/meta/blob/master/src/meta/boot.clj#L112-L163
+src/meta/boot.clj:112-163
+```(boot/deftask develop
+  "Start development workflow."
+  []
+  (boot/task-options!
+    impl/info   {:message "Running Workflow...: develop"}```
+ Show more
+degree9/metaAdded by GitHub
+there are 3 workflow tasks
+you probably want to use the `develop` workflow
+
+vigilancetech [8:18 PM]
+```kevin@scuttle ~/0work/boot-electron $ boot develop
+Downloading https://github.com/boot-clj/boot/releases/download/2.6.0/boot.jar...
+Retrieving boot-reload-0.5.1.pom from https://clojars.org/repo/
+Retrieving boot-semver-1.6.0.pom from https://clojars.org/repo/
+Retrieving boot-npm-1.4.0.pom from https://clojars.org/repo/
+Retrieving boot-reload-0.5.1.jar from https://clojars.org/repo/ (14k)
+Retrieving boot-semver-1.6.0.jar from https://clojars.org/repo/ (8k)
+Retrieving boot-npm-1.4.0.jar from https://clojars.org/repo/ (3k)
+Retrieving boot-exec-1.0.0.jar from https://clojars.org/repo/ (3k)
+Retrieving clj-time-0.13.0.jar from https://clojars.org/repo/ (21k)
+      clojure.lang.ExceptionInfo: clojure/lang/AFunction
+    data: {:file "degree9/boot_semver/impl.clj", :line 68}
+  java.lang.NoClassDefFoundError: clojure/lang/AFunction
+java.lang.ClassNotFoundException: clojure.lang.AFunction
+                                        ...
+                   boot.cli/assert-argspecs                           cli.clj:                      184```
+
+flyboarder [8:19 PM]
+get it from clojars
+https://clojars.org/degree9/boot-electron
+Clojars
+[degree9/boot-electron "0.2.0"]
+[degree9/boot-electron "0.2.0"] Compile cljs app to electron.
+Total downloads / this version
+209 / 150
+Coordinates
+[degree9/boot-electron "0.2.0"]
+ill see if I can build it locally
+
+vigilancetech [8:20 PM]
+cd
+when I add it to my project's deps I get `clojure.lang.ExceptionInfo: No such var: npm/node-modules`
+does it go in meta's deps instead?
+
+flyboarder [8:26 PM]
+there is probably a version conflict, `boot-electron` is old and only experimental code, it shouldn’t take much to get it up to date
+the repl setup is really just calling `boot shadow/server` and `shadow-cljs cljs-repl` (edited)
+
+vigilancetech [8:32 PM]
+ah, I just changed everything in `boot-electron` to `"LATEST"` and an updated `boot.properties` and it compiled
+
+flyboarder [8:32 PM]
+`boot shadow/compile --build repl`
+for the repl files the config will need to be adjusted for client/server
+actually my whole repl docs are here:
+https://github.com/degree9/enterprise#cljs-repl
+degree9/enterprise
+D9 Enterprise Platform.
+Website
+http://degree9.io
+Stars
+1
+degree9/enterpriseSep 1st, 2017Added by GitHub
+the code in `degree9/enterprise` is not supported open-source, but the guide is still valid
+
+vigilancetech [8:41 PM]
+how do I use boot-electron to get it to start/reload electron?
+
+slackbot [8:41 PM]
+flyboarder has snoozed notifications. Send one anyway? Send notification
+
+flyboarder [8:41 PM]
+currently it doesn’t (edited)
+boot-electron is for generating the electron edn file the same way the node edn file is generated
+
+vigilancetech [8:42 PM]
+ah, ok
+
+flyboarder [8:43 PM]
+you then just need to launch electron using boot-exec the same way we do with boot-nodejs
+
+vigilancetech [8:43 PM]
+ah, that makes sense :slightly_smiling_face:
+
+flyboarder [8:44 PM]
+there are some outstanding issues that would make this an easier process
+https://github.com/degree9/boot-exec/issues/13 (edited)
+which  needs porting the restart task from boot-nodejs to boot-exec in a more general way, then all the tools could use it including boot-electron (edited)
+I just havn’t had the extra cycles to move the code around and update all my projects
+
+vigilancetech [8:48 PM]
+understood.   This is looking really good tho.   I hope you can do it.   It'll take me a while to get to know the topography well enough to be help much unfortunately cuz after I get this app out I think I got a couple more lined up.
+how do you execute boot-electron?  I don't see it on the list of boot help tasks in my project
+
+flyboarder [8:49 PM]
+include namespace and call the `electron` task i believe
+
+vigilancetech [8:50 PM]
+in build.boot?
+
+flyboarder [8:50 PM]
+yes
+`degree9.boot-electron/electron`
+
+vigilancetech [8:52 PM]
+is its require?
+
+```(require '[meta.boot :as m]
+         '[boot-electron :as e])```
+
+flyboarder [8:53 PM]
+`[degree9.boot-electron :as e]`
+`(e/electron)`
+
+vigilancetech [8:54 PM]
+should that function call be part of the `develop` task?
+or just called in the `init` section
+
+flyboarder [8:55 PM]
+yep, we would need a new workflow task for electron apps, but you could call it before develop too I think
+`boot e/electron develop`
+
+vigilancetech [8:55 PM]
+yeah, ok
+okay, while that's compiling, my understanding is with a watch task shadow creates an nrepl.   My emacs/cider *should* be able to connect to it.  If that's so I shouldn't have to issue any of the repl commands you mentioned above, right?
+we are already using shadow's watch task, right?
+
+flyboarder [8:58 PM]
+we are not, shadow’s watch task only applies when using shadow not boot
+
+vigilancetech [8:58 PM]
+ok, so how do I get an semi-functioning nrepl out of boot?
+
+flyboarder [8:58 PM]
+but you can start a shadow server before compiling
+`boot shadow/server`
+
+vigilancetech [8:59 PM]
+so it would be something like `boot shadow/server develop` and then I could connect ?
+
+flyboarder [9:00 PM]
+that should work yes
+ideally we can work the server task into theworkflows
+
+vigilancetech [9:00 PM]
+cool (except looks like 2 JVMs again... ugh :confused: )
+
+flyboarder [9:00 PM]
+before starting the watch
+is it two full jvm instances or is it just another thread?
+
+vigilancetech [9:01 PM]
+yeah, idk.   Idk who to ask either
+
+flyboarder [9:01 PM]
+@thheller in #shadow-cljs
+
+vigilancetech [9:02 PM]
+he might know, but doesn't seem to know much about boot
+
+flyboarder [9:02 PM]
+lol yeah he seems pretty against boot for some reason
+
+vigilancetech [9:03 PM]
+but I know he looked at it at one point, like as in if something akin to pods could be used to have multiple projects/users share the same shadow server JVM
+well, I think he built shadow b4 boot
+it just didn't get popular until after
+well, if I run it I should be able to tell from a process list if its one or two JVMs
+
+flyboarder [9:04 PM]
+yeah
+
+vigilancetech [9:04 PM]
+ugh, I'm getting another error, probably from some dep issue
+it doesn't seem to like any form of that require I can dream up
+
+flyboarder [9:13 PM]
+what do you mean?
+for boot-electron?
+
+vigilancetech [9:14 PM]
+my project's build.boot
+
+```;; require
+(require '[meta.boot :as m]
+         '[degree9.boot-electron :as e]
+         )```
+
+
+flyboarder [9:14 PM]
+hm that looks fine
+whats the error? (edited)
+
+vigilancetech [9:16 PM]
+Untitled
+```
+                         Boot.main          Boot.java: 257
+                            ...
+                       boot.App.main           App.java: 500
+                      boot.App.runBoot           App.java: 407
+org.projectodd.shimdandy.impl.ClojureRuntimeShimImpl.invoke ClojureRuntimeShimImpl.java: 150
+org.projectodd.shimdandy.impl.ClojureRuntimeShimImpl.invoke ClojureRuntimeShimImpl.java: 159
+                            ...
+                      boot.main/-main           main.clj: 216
+                     boot.main/-main/fn           main.clj: 216
+                  clojure.core/load-string           core.clj: 4070
+                  clojure.core/load-reader           core.clj: 4068
+                            ...
+                  boot.user$eval174.invoke               :  59
+               boot.user$eval174.invokeStatic               :  59
+                            ...
+                    clojure.core/require           core.clj: 5962 (repeats 2 times)
+                     clojure.core/apply           core.clj: 659
+                            ...
+                   clojure.core/load-libs           core.clj: 5924
+                   clojure.core/load-libs           core.clj: 5940
+                     clojure.core/apply           core.clj: 659
+                            ...
+                   clojure.core/load-lib           core.clj: 5883
+                   clojure.core/load-lib           core.clj: 5902
+                  clojure.core/load-lib/fn           core.clj: 5903
+                   clojure.core/load-one           core.clj: 5863
+                            ...
+                     clojure.core/load           core.clj: 6044
+                     clojure.core/load           core.clj: 6060
+                    clojure.core/load/fn           core.clj: 6061
+                            ...
+               degree9.boot-electron/eval6363      boot_electron.clj:  1
+       degree9.boot-electron/eval6363/loading--auto--      boot_electron.clj:  1
+                            ...
+                    clojure.core/require           core.clj: 5962 (repeats 2 times)
+                     clojure.core/apply           core.clj: 659
+                            ...
+                   clojure.core/load-libs           core.clj: 5924
+                   clojure.core/load-libs           core.clj: 5940
+                     clojure.core/apply           core.clj: 659
+                            ...
+                   clojure.core/load-lib           core.clj: 5883
+                   clojure.core/load-lib           core.clj: 5902
+                  clojure.core/load-lib/fn           core.clj: 5903
+                   clojure.core/load-one           core.clj: 5863
+                            ...
+                     clojure.core/load           core.clj: 6044
+                     clojure.core/load           core.clj: 6060
+                    clojure.core/load/fn           core.clj: 6061
+                            ...
+java.io.FileNotFoundException: Could not locate adzerk/boot_reload__init.class or adzerk/boot_reload.clj on classpath. Please check that namespaces with dashes use underscores in the Clojure file name.
+  clojure.lang.ExceptionInfo: Could not locate adzerk/boot_reload__init.class or adzerk/boot_reload.clj on classpath. Please check that namespaces with dashes use underscores in the Clojure file name.
+  line: 1
+kevin@scuttle ~/0work/aaameta $
+```
+Collapse
+
+flyboarder [9:16 PM]
+ah yeah ok, I just fixed that on my build try `0.3.0-SNAPSHOT`
+it’s a deps bug
+
+vigilancetech [9:16 PM]
+ok
+
+flyboarder [9:19 PM]
+the old version assumed you wanted to use `adzerk/boot-reload` which you might not (edited)
+
+vigilancetech [9:19 PM]
+looks like it might be working
+I'm also getting this little bit of funk:
+
+```• hoplon from hoplon.boot-hoplon
+exec: unknown option(s): :output
+Initial Project Version...: 0.0.0```
+
+flyboarder [9:20 PM]
+hmmm
+wonder where thats coming from
+
+vigilancetech [9:20 PM]
+there's some :output-dirs in the shadow-cljs.edn
+
+flyboarder [9:22 PM]
+that again would be a deps issue, it’s trying to call a different version of the exec task
+could you run `boot show -p`
+
+vigilancetech [9:22 PM]
+ok
+```~/0work/aaameta $ boot show -p
+Loading project environment...
+Loading project tasks...
+• exec from degree9.boot-exec
+• nodejs from degree9.boot-nodejs
+• serve from degree9.boot-nodejs
+• npm from degree9.boot-npm
+• :all from degree9.boot-semver
+• :all from degree9.boot-semgit
+• feature from degree9.boot-semgit.workflow
+• sync-repo from degree9.boot-semgit.workflow
+• feathers from feathers.boot-feathers
+• hoplon from hoplon.boot-hoplon
+[!] cheshire
+    ✔ 5.8.1
+      degree9/boot-electron
+    ✘ 5.7.1
+      degree9/meta
+[!] boot/core
+    ✘ 2.7.2
+      degree9/meta
+    ✔ 2.7.1
+      degree9/boot-electron
+[!] boot/pod
+    ✘ 2.7.2
+      degree9/meta
+    ✔ 2.7.1
+      degree9/boot-electron
+[!] com.fasterxml.jackson.core/jackson-core
+    ✔ 2.9.6
+      degree9/boot-electron
+    ✘ 2.8.7
+      org.clojure/clojurescript
+    ✘ 2.8.6
+      degree9/meta
+[!] com.fasterxml.jackson.dataformat/jackson-dataformat-cbor
+    ✔ 2.9.6
+      degree9/boot-electron
+    ✘ 2.8.6
+      degree9/meta
+[!] com.fasterxml.jackson.dataformat/jackson-dataformat-smile
+    ✔ 2.9.6
+      degree9/boot-electron
+    ✘ 2.8.6
+      degree9/meta
+[!] degree9/boot-exec
+    ✘ 1.1.0-20180304.205444-10
+      degree9/meta
+    ✔ 1.0.0
+      degree9/boot-electron
+[!] degree9/boot-npm
+    ✘ 1.10.0-20180226.180212-17
+      degree9/meta
+    ✔ 1.9.0
+      degree9/boot-electron
+[✔] org.clojure/clojure
+    ✔ 1.10.0-alpha6
+      org.clojure/clojure
+    ✘ 1.9.0
+      degree9/boot-electron
+      degree9/meta
+    ✘ 1.8.0
+      org.clojure/clojurescript
+[!] org.clojure/core.specs.alpha
+    ✔ 0.2.36
+      org.clojure/clojure
+    ✘ 0.1.24
+      degree9/boot-electron
+      degree9/meta
+[!] org.clojure/spec.alpha
+    ✔ 0.2.168
+      org.clojure/clojure
+    ✘ 0.1.143
+      degree9/boot-electron
+      degree9/meta
+~```
+
+flyboarder [9:25 PM]
+ok so based on that you probably want to pin the versions of boot-npm and boot-exec to the latest version, boot-electron is pulling in older versions
+
+meta uses the latest snapshots right now
+
+vigilancetech [9:28 PM]
+those aren't deps of my project currently.   Should I add them in my project's build.boot, or put them as "LATEST" in my meta repo and recompile that?
+
+flyboarder [9:29 PM]
+you can add them to your project, the issue is boot-electron using the stable versions and meta using the snapshots
+since meta and electron are both direct deps of your project they conflict
+if you add boot-npm and boot-exec to your project the version you include will be used instead
+
+vigilancetech [9:30 PM]
+got it
+
+vigilancetech [9:36 PM]
+ok, well, this looks like its getting close.   I might take a break for a while.   What timezone are you in and what time do you think you'll be back on tomorrow?
+
+flyboarder [9:37 PM]
+Mountain Time UTC-7
+I am usually around, meetings tomorrow tho so Im not sure how much screen time i’ll get in
+
+vigilancetech [9:38 PM]
+ok, well, thanks a lot.   I think I just gotta get the whole client side worked out now and I'm back in biz!
+
+flyboarder [9:39 PM]
+it your app hosted? or will it be entirely local?
+
+vigilancetech [9:39 PM]
+at this point local, with the option of remote UI
+
+flyboarder [9:40 PM]
+ok, the server is a bit different when you run it locally with electron, but we can get into it later, glad it’s coming together for you!
+
+vigilancetech [9:40 PM]
+cool, g'nite!
+Message Input

@@ -1,0 +1,40 @@
+;; shadow-cljs configuration
+;; add: ["@feathersjs/authentication" "2.1.6"] to :dependencies below?
+{:source-paths
+ ["src"]
+
+ :dependencies
+ [[org.clojure/clojure "1.10.0-alpha6"]
+  [org.clojure/clojurescript "1.10.339"]
+  [degree9/meta "0.4.0-SNAPSHOT"]
+  ]
+
+ ; http server
+ :http {:host "127.0.0.1"}
+
+ ; build configurations
+ :builds
+ {:client  {:target :browser
+            :output-dir "client"
+            :asset-path "/client"
+            :modules {:app {:entries [app.index]}}}
+
+  :server  {:target :node-script
+            :main app.server/init
+            :output-dir "app"
+            :output-to "nodejs.js"
+            :release {:compiler-options {:optimizations :simple}}}
+
+  :repl {
+         :target :node-script
+         ; :target :browser
+         :main degree9.repl/init
+         :output-dir "repl-public/js"
+         :output-to "repl-node/main.js"
+         :asset-path "/js"
+         :compiler-options
+         {:reader-features #{:browser}}
+
+         :modules
+         {:main
+          {:entries [degree9.repl]}}}}}
