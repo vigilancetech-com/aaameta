@@ -1,15 +1,16 @@
 ;; Powered by Meta ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; dependency
-(set-env! :dependencies '[[org.clojure/clojure         "1.10.0-alpha6"]
+(set-env!           :asset-paths  #{"resources"}
+                    :source-paths #{"src"}
+
+                    :dependencies '[[org.clojure/clojure         "1.10.0-alpha6"]
                           [org.clojure/clojurescript   "1.10.339"]
                           [degree9/boot-electron       "0.3.0-SNAPSHOT"]
                           [degree9/boot-npm            "LATEST"]
                           [degree9/boot-exec           "LATEST"]
                           [degree9/meta                "0.4.0-SNAPSHOT"]])
 
-:asset-paths  #{"resources"}
-:source-paths #{"src"}
 
 
 ;; require
