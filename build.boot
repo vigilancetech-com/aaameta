@@ -6,17 +6,16 @@
 
                     :dependencies '[[org.clojure/clojure         "1.10.0-alpha6"]
                           [org.clojure/clojurescript   "1.10.339"]
-                          [thheller/shadow-cljs "2.6.19"]
+                          [degree9/boot-shadow "2.6.6-SNAPSHOT"]
                           [degree9/boot-electron       "0.3.0-SNAPSHOT"]
                           [degree9/boot-npm            "LATEST"]
                           [degree9/boot-exec           "LATEST"]
                           [degree9/meta                "0.4.0-SNAPSHOT"]])
 
 
-
 ;; require
 (require '[meta.boot :as m]
-         '[thheller.shadow-cljs :as s]
+         '[degree9.boot-shadow :as s]
          '[degree9.boot-exec :as be]
          '[degree9.boot-electron :as e])
 
